@@ -9,7 +9,7 @@
     "thumb": "thumbnails/campaigns-calendar-view.png"
   },
   {
-    "name": "Onboarding get started setup UX — Op 1",
+    "name": "Onboarding get started setup UX \u2014 Op 1",
     "outcome": "Efficiency",
     "pod": "Platform",
     "size": "Medium",
@@ -18,7 +18,7 @@
     "thumb": "thumbnails/onboarding-get-started.png"
   },
   {
-    "name": "Onboarding get started setup UX — CA",
+    "name": "Onboarding get started setup UX \u2014 CA",
     "outcome": "Efficiency",
     "pod": "Platform",
     "size": "Small",
@@ -36,7 +36,7 @@
     "thumb": "thumbnails/agent-demos-website.png"
   },
   {
-    "name": "Resources page in Front desk — Fallback & failover",
+    "name": "Resources page in Front desk \u2014 Fallback & failover",
     "outcome": "Retention",
     "pod": "Front desk",
     "size": "Medium",
@@ -72,30 +72,12 @@
     "thumb": "thumbnails/content-hub-template-builder.png"
   },
   {
-    "name": "Inbox outcomes — Overview page",
+    "name": "Inbox outcomes \u2014 Overview page",
     "outcome": "Retention",
     "pod": "Inbox",
     "size": "Medium",
     "link": "https://myna-git-rupa-newui-birdeye-design.vercel.app/inbox",
     "jira": "https://birdeye.atlassian.net/browse/V2BIRD-28842",
     "thumb": "thumbnails/inbox-outcomes.png"
-  },
-  {
-    "name": "teste",
-    "pod": "MA",
-    "outcome": "Retention",
-    "size": "Medium",
-    "link": "https://birdeye.atlassian.net/browse/V2BIRD-28272",
-    "jira": "https://birdeye.atlassian.net/browse/V2BIRD-28272",
-    "thumb": "thumbnails/teste-1792058950806.png"
-  },
-  {
-    "name": "High value customer",
-    "pod": "MA",
-    "outcome": "Retention",
-    "size": "Medium",
-    "link": "https://birdeye.atlassian.net/browse/V2BIRD-28272",
-    "jira": "https://birdeye.atlassian.net/browse/V2BIRD-28272",
-    "thumb": "thumbnails/high-value-customer-1792059331248.png"
   }
 ]
