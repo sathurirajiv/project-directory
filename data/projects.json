@@ -88,5 +88,14 @@
     "link": "https://birdeye.atlassian.net/browse/V2BIRD-28272",
     "jira": "https://birdeye.atlassian.net/browse/V2BIRD-28272",
     "thumb": "thumbnails/teste-1792058950806.png"
+  },
+  {
+    "name": "High value customer",
+    "pod": "MA",
+    "outcome": "Retention",
+    "size": "Medium",
+    "link": "https://birdeye.atlassian.net/browse/V2BIRD-28272",
+    "jira": "https://birdeye.atlassian.net/browse/V2BIRD-28272",
+    "thumb": "thumbnails/high-value-customer-1792059331248.png"
   }
 ]
