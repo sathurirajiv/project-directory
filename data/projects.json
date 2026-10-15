@@ -1,0 +1,83 @@
+[
+  {
+    "name": "Campaigns calendar view",
+    "outcome": "Retention",
+    "pod": "MA",
+    "size": "Large",
+    "link": "https://myna-git-feat-campaign-calendar-spotlight-birdeye-design.vercel.app/marketing-automation/manage-campaigns",
+    "jira": "https://birdeye.atlassian.net/browse/V2BIRD-31690",
+    "thumb": "thumbnails/campaigns-calendar-view.png"
+  },
+  {
+    "name": "Onboarding get started setup UX — Op 1",
+    "outcome": "Efficiency",
+    "pod": "Platform",
+    "size": "Medium",
+    "link": null,
+    "jira": "https://birdeye.atlassian.net/browse/V2BIRD-34104",
+    "thumb": "thumbnails/onboarding-get-started.png"
+  },
+  {
+    "name": "Onboarding get started setup UX — CA",
+    "outcome": "Efficiency",
+    "pod": "Platform",
+    "size": "Small",
+    "link": "https://docs.google.com/presentation/d/1SacZfXd6SYqRFTEy5BTIR8Wc2V_DaWH2_iVDnHzG1io/edit?usp=sharing",
+    "jira": null,
+    "thumb": "thumbnails/onboarding-setup-ca.png"
+  },
+  {
+    "name": "Agent demos on Birdeye website",
+    "outcome": "Conversion",
+    "pod": "Website",
+    "size": "Large",
+    "link": "https://sathurirajiv.github.io/Agent-demos---Website/",
+    "jira": "https://birdeye.atlassian.net/browse/V2BIRD-23386",
+    "thumb": "thumbnails/agent-demos-website.png"
+  },
+  {
+    "name": "Resources page in Front desk — Fallback & failover",
+    "outcome": "Retention",
+    "pod": "Front desk",
+    "size": "Medium",
+    "link": null,
+    "jira": "https://birdeye.atlassian.net/browse/V2BIRD-24880",
+    "thumb": "thumbnails/front-desk-fallback-failover.png"
+  },
+  {
+    "name": "Convert all MA to Agent arc framework",
+    "outcome": "Consistency",
+    "pod": "MA",
+    "size": "Medium",
+    "link": "https://www.figma.com/design/KcaewPfxy5EV65jgwqwRHN/MA---Campaigns-navigation-revamp?node-id=59-21567&t=BcprpwUzwJ3BwODE-4",
+    "jira": "https://birdeye.atlassian.net/browse/V2BIRD-27682",
+    "thumb": "thumbnails/ma-agent-arc-framework.png"
+  },
+  {
+    "name": "Decentralise campaigns across products",
+    "outcome": "Retention",
+    "pod": "MA",
+    "size": "Large",
+    "link": "https://www.figma.com/design/KcaewPfxy5EV65jgwqwRHN/MA---Campaigns-navigation-revamp?node-id=377-34062&t=WXK0JAY7iiV6ReYM-4",
+    "jira": "https://birdeye.atlassian.net/browse/V2BIRD-28188",
+    "thumb": "thumbnails/decentralise-campaigns.png"
+  },
+  {
+    "name": "Make template builder consistent as Content hub",
+    "outcome": "Consistency",
+    "pod": "MA",
+    "size": "Small",
+    "link": "https://www.figma.com/design/KcaewPfxy5EV65jgwqwRHN/MA---Campaigns-navigation-revamp?node-id=181-20723&t=aUjMGpq5O75CS86U-44",
+    "jira": "https://birdeye.atlassian.net/browse/V2BIRD-29235",
+    "thumb": "thumbnails/content-hub-template-builder.png"
+  },
+  {
+    "name": "Inbox outcomes — Overview page",
+    "outcome": "Retention",
+    "pod": "Inbox",
+    "size": "Medium",
+    "link": "https://myna-git-rupa-newui-birdeye-design.vercel.app/inbox",
+    "jira": "https://birdeye.atlassian.net/browse/V2BIRD-28842",
+    "thumb": "thumbnails/inbox-outcomes.png"
+  }
+]
