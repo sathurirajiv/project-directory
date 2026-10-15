@@ -70,14 +70,14 @@
 
   .add-btn{
     display:flex; align-items:center; gap:7px;
-    background:var(--primary); color:#fff; border:none;
+    background:none; color:var(--text-action); border:1px solid var(--border);
     border-radius:var(--radius-sm); font:inherit; font-size:12.5px;
-    padding:9px 14px 9px 11px; cursor:pointer;
+    padding:8px 13px 8px 10px; cursor:pointer; order:3;
   }
-  .add-btn:hover{background:var(--primary-hover);}
+  .add-btn:hover{background:var(--primary-soft); border-color:var(--border-strong); color:var(--primary);}
 
   /* Rectangular dropdown filters */
-  .filter{position:relative; flex-shrink:0;}
+  .filter{position:relative; flex-shrink:0; order:1;}
   .filter-btn{
     display:flex; align-items:center; gap:7px;
     background:var(--surface); border:1px solid var(--border);
@@ -276,16 +276,11 @@
 
   .drawer-header{
     display:flex; align-items:center; justify-content:space-between; gap:12px;
-    padding:18px 20px; border-bottom:1px solid var(--border); flex-shrink:0;
+    padding:14px 16px; border-bottom:1px solid var(--border); flex-shrink:0;
   }
-  .drawer-title{font-size:15.5px; color:var(--text-primary);}
-  .drawer-close{
-    width:28px; height:28px; border-radius:999px; border:none; background:var(--surface-subtle);
-    color:var(--text-secondary); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;
-  }
-  .drawer-close:hover{background:var(--surface-hover); color:var(--text-primary);}
+  .drawer-header-left{display:flex; align-items:center; gap:12px; min-width:0;}
+  .drawer-title{font-size:14.5px; color:var(--text-primary); white-space:nowrap;}
   .drawer-body{flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:16px;}
-  .drawer-footer{padding:16px 20px; border-top:1px solid var(--border); display:flex; gap:10px; flex-shrink:0;}
 
   .field{display:flex; flex-direction:column; gap:6px;}
   .field label{font-size:12.5px; color:var(--text-secondary);}
@@ -296,10 +291,10 @@
   .field select{appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2380848d' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 11px center; background-size:12px; padding-right:30px;}
   .field .hint{font-size:11.5px; color:var(--text-tertiary);}
 
-  .btn-primary{background:var(--primary); color:#fff; border:none; border-radius:var(--radius-sm); padding:10px 16px; font:inherit; font-size:13.5px; cursor:pointer; flex:1;}
+  .btn-primary{background:var(--primary); color:#fff; border:none; border-radius:var(--radius-sm); padding:9px 15px; font:inherit; font-size:13px; cursor:pointer; flex:none;}
   .btn-primary:hover{background:var(--primary-hover);}
   .btn-primary:disabled{opacity:.55; cursor:default;}
-  .btn-ghost{background:none; border:1px solid var(--border); color:var(--text-secondary); border-radius:var(--radius-sm); padding:10px 16px; font:inherit; font-size:13.5px; cursor:pointer;}
+  .btn-ghost{background:none; border:1px solid var(--border); color:var(--text-secondary); border-radius:var(--radius-sm); padding:9px 15px; font:inherit; font-size:13px; cursor:pointer;}
   .btn-ghost:hover{background:var(--surface-hover); color:var(--text-primary);}
 
   .thumb-upload{display:flex; align-items:center; gap:12px;}
@@ -308,8 +303,8 @@
     background:var(--surface-subtle); display:flex; align-items:center; justify-content:center;
     overflow:hidden; position:relative; flex-shrink:0;
   }
+  .thumb-upload-preview[hidden]{display:none;}
   .thumb-upload-preview img{width:100%; height:100%; object-fit:cover; display:block;}
-  .thumb-upload-empty{color:var(--text-tertiary); font-size:10.5px; text-align:center; padding:4px; line-height:14px;}
   .thumb-upload-remove{
     position:absolute; top:3px; right:3px; width:18px; height:18px; border-radius:999px;
     background:rgba(16,17,21,.6); color:#fff; border:none; display:flex; align-items:center; justify-content:center; cursor:pointer;
@@ -398,10 +393,11 @@
 <div class="drawer-overlay" id="drawerOverlay" hidden>
   <div class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
     <div class="drawer-header">
-      <div class="drawer-title" id="drawerTitle">Add project</div>
-      <button class="drawer-close" id="drawerClose" aria-label="Close">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
-      </button>
+      <div class="drawer-header-left">
+        <button type="button" class="btn-ghost" id="drawerCancelBtn">Cancel</button>
+        <div class="drawer-title" id="drawerTitle">Add project</div>
+      </div>
+      <button type="submit" form="projectForm" class="btn-primary" id="drawerSaveBtn" hidden>Save project</button>
     </div>
 
     <div class="drawer-body">
@@ -453,10 +449,9 @@
         <div class="field" style="margin-top:16px;">
           <label>Thumbnail</label>
           <div class="thumb-upload">
-            <div class="thumb-upload-preview" id="thumbPreviewWrap">
-              <div class="thumb-upload-empty" id="thumbPreviewEmpty">No image</div>
-              <img id="thumbPreviewImg" hidden alt="">
-              <button type="button" class="thumb-upload-remove" id="thumbRemoveBtn" hidden aria-label="Remove image">
+            <div class="thumb-upload-preview" id="thumbPreviewWrap" hidden>
+              <img id="thumbPreviewImg" alt="">
+              <button type="button" class="thumb-upload-remove" id="thumbRemoveBtn" aria-label="Remove image">
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 6l12 12M18 6L6 18"/></svg>
               </button>
             </div>
@@ -480,11 +475,6 @@
       </form>
 
       <div class="token-footnote" id="tokenFootnote" hidden>Connected to GitHub. <button type="button" id="disconnectTokenBtn">Disconnect</button></div>
-    </div>
-
-    <div class="drawer-footer">
-      <button type="button" class="btn-ghost" id="drawerCancelBtn">Cancel</button>
-      <button type="submit" form="projectForm" class="btn-primary" id="drawerSaveBtn">Save project</button>
     </div>
   </div>
 </div>
@@ -836,7 +826,6 @@
   // ---- drawer elements ----
   var drawerOverlay = document.getElementById("drawerOverlay");
   var addProjectBtn = document.getElementById("addProjectBtn");
-  var drawerClose = document.getElementById("drawerClose");
   var drawerCancelBtn = document.getElementById("drawerCancelBtn");
   var drawerSaveBtn = document.getElementById("drawerSaveBtn");
   var tokenGate = document.getElementById("tokenGate");
@@ -857,8 +846,8 @@
 
   var thumbInput = document.getElementById("thumbInput");
   var thumbPickBtn = document.getElementById("thumbPickBtn");
+  var thumbPreviewWrap = document.getElementById("thumbPreviewWrap");
   var thumbPreviewImg = document.getElementById("thumbPreviewImg");
-  var thumbPreviewEmpty = document.getElementById("thumbPreviewEmpty");
   var thumbRemoveBtn = document.getElementById("thumbRemoveBtn");
   var selectedThumbFile = null;
   var selectedThumbDataUrl = null;
@@ -892,16 +881,14 @@
     selectedThumbFile = null;
     selectedThumbDataUrl = null;
     thumbInput.value = "";
-    thumbPreviewImg.hidden = true;
     thumbPreviewImg.src = "";
-    thumbPreviewEmpty.hidden = false;
-    thumbRemoveBtn.hidden = true;
+    thumbPreviewWrap.hidden = true;
+    thumbPickBtn.hidden = false;
     formStatus.textContent = "";
     formStatus.className = "form-status";
   }
 
   addProjectBtn.addEventListener("click", openDrawer);
-  drawerClose.addEventListener("click", function(){ closeDrawer(); resetForm(); });
   drawerCancelBtn.addEventListener("click", function(){ closeDrawer(); resetForm(); });
   drawerOverlay.addEventListener("click", function(e){
     if(e.target === drawerOverlay){ closeDrawer(); resetForm(); }
@@ -931,19 +918,17 @@
     readFileAsDataUrl(file).then(function(dataUrl){
       selectedThumbDataUrl = dataUrl;
       thumbPreviewImg.src = dataUrl;
-      thumbPreviewImg.hidden = false;
-      thumbPreviewEmpty.hidden = true;
-      thumbRemoveBtn.hidden = false;
+      thumbPreviewWrap.hidden = false;
+      thumbPickBtn.hidden = true;
     });
   });
   thumbRemoveBtn.addEventListener("click", function(){
     selectedThumbFile = null;
     selectedThumbDataUrl = null;
     thumbInput.value = "";
-    thumbPreviewImg.hidden = true;
     thumbPreviewImg.src = "";
-    thumbPreviewEmpty.hidden = false;
-    thumbRemoveBtn.hidden = true;
+    thumbPreviewWrap.hidden = true;
+    thumbPickBtn.hidden = false;
   });
 
   projectForm.addEventListener("submit", function(e){
