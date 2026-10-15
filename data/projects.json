@@ -79,5 +79,14 @@
     "link": "https://myna-git-rupa-newui-birdeye-design.vercel.app/inbox",
     "jira": "https://birdeye.atlassian.net/browse/V2BIRD-28842",
     "thumb": "thumbnails/inbox-outcomes.png"
+  },
+  {
+    "name": "teste",
+    "pod": "MA",
+    "outcome": "Retention",
+    "size": "Medium",
+    "link": "https://birdeye.atlassian.net/browse/V2BIRD-28272",
+    "jira": "https://birdeye.atlassian.net/browse/V2BIRD-28272",
+    "thumb": "thumbnails/teste-1792058950806.png"
   }
 ]
