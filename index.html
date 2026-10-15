@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rajiv's projects</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap" rel="stylesheet">
+<style>
+  /* Tokens lifted from myna/tailwind.config.ts, softened for a quieter, rounder page */
+  :root{
+    --primary:#1976D2;
+    --primary-soft:#f0f6fd;
+
+    --surface:#ffffff;
+    --surface-l2:#f5f6f8;
+    --surface-hover:#f6f7f9;
+    --surface-subtle:#f7f7f8;
+    --surface-muted:#fafafa;
+
+    --border:#ebedf1;
+    --border-strong:#dde1e7;
+
+    --text-primary:#202229;
+    --text-secondary:#80848d;
+    --text-tertiary:#adb1b9;
+    --text-action:#5f87ad;
+
+    --chip-warning-text:#ad8a3a;
+    --chip-success-text:#4d8a5c;
+    --chip-info-text:#4a7aa8;
+    --chip-purple-text:#8070ab;
+    --chip-danger-text:#b56868;
+
+    --radius-card:18px;
+    --radius-sm:10px;
+    --shadow-card:0 1px 2px rgba(20,22,30,.03);
+    --shadow-hover:0 8px 20px rgba(20,22,30,.06);
+    --shadow-dropdown:0 10px 24px rgba(20,22,30,.09);
+
+    color-scheme:light;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--surface-l2);
+    color:var(--text-primary);
+    font-family:"Inter", ui-sans-serif, system-ui, sans-serif;
+    font-size:14px;
+    line-height:20px;
+    letter-spacing:-0.2px;
+    padding:36px 24px 56px;
+  }
+  .wrap{max-width:1160px; margin-inline:auto;}
+
+  /* ---------- Header ---------- */
+  .page-header{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:16px; flex-wrap:wrap;
+    margin-bottom:24px;
+  }
+  h1{
+    font-size:21px; line-height:28px; letter-spacing:-0.2px;
+    font-weight:400; margin:0; color:var(--text-primary);
+  }
+
+  .filters{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+
+  /* Rectangular dropdown filters */
+  .filter{position:relative; flex-shrink:0;}
+  .filter-btn{
+    display:flex; align-items:center; gap:7px;
+    background:var(--surface); border:1px solid var(--border);
+    color:var(--text-secondary); font:inherit; font-size:12.5px; font-weight:400;
+    padding:8px 12px; border-radius:var(--radius-sm); cursor:pointer;
+  }
+  .filter-btn:hover{color:var(--text-primary); border-color:var(--border-strong);}
+  .filter-btn:focus-visible, a:focus-visible, button:focus-visible{outline:2px solid var(--primary); outline-offset:2px;}
+  .filter-btn svg.chev{transition:transform .15s ease; color:var(--text-tertiary); flex-shrink:0;}
+  .filter[data-open="true"] .filter-btn svg.chev{transform:rotate(180deg);}
+  .filter-menu{
+    position:absolute; top:calc(100% + 6px); left:0; z-index:30;
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; box-shadow:var(--shadow-dropdown);
+    min-width:180px; padding:6px; display:none;
+  }
+  .filter[data-open="true"] .filter-menu{display:block;}
+  .filter-opt{
+    width:100%; text-align:left; background:none; border:none; font:inherit;
+    font-size:13.5px; color:var(--text-primary); padding:8px 10px; border-radius:8px;
+    cursor:pointer; display:flex; align-items:center; gap:9px;
+  }
+  .filter-opt:hover{background:var(--surface-hover);}
+  .filter-opt .box{
+    width:15px; height:15px; border-radius:4px; border:1.5px solid var(--border-strong);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0; color:#fff;
+  }
+  .filter-opt[aria-checked="true"] .box{background:var(--primary); border-color:var(--primary);}
+  .filter-opt[aria-checked="true"] .box svg{display:block;}
+  .filter-opt .box svg{display:none;}
+  .filter-div{height:1px; background:var(--border); margin:5px 2px;}
+
+  /* ---------- Section ---------- */
+  .section-head{display:flex; align-items:baseline; gap:9px; margin-bottom:14px;}
+  .section-head h2{font-size:14px; line-height:20px; font-weight:400; margin:0; color:var(--text-primary);}
+  .section-count{font-size:12.5px; color:var(--text-tertiary);}
+
+  .grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(272px,1fr)); gap:18px;
+  }
+
+  /* ---------- Card ---------- */
+  .card{
+    position:relative;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-card);
+    overflow:visible; display:flex; flex-direction:column;
+    box-shadow:var(--shadow-card);
+    transition:box-shadow .18s ease, border-color .18s ease;
+  }
+  .card:hover{border-color:var(--border-strong); box-shadow:var(--shadow-hover);}
+
+  .thumb{
+    position:relative; height:184px; margin:8px 8px 0; border-radius:12px;
+    padding:9px; display:flex; align-items:center; justify-content:center;
+  }
+  .thumb-frame{
+    position:relative; width:100%; height:100%; border-radius:9px; overflow:hidden;
+    border:1px solid var(--border-strong); background:#ffffff;
+    box-shadow:0 1px 3px rgba(20,22,30,.06);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .thumb-img{width:100%; height:100%; object-fit:cover; object-position:top center; display:block;}
+  .thumb-placeholder{width:100%; height:100%; display:flex; align-items:center; justify-content:center;}
+
+  /* Preview overlay — eye icon over the screenshot, shown on hover */
+  .preview-overlay{
+    position:absolute; inset:0; z-index:2; border-radius:9px;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(13,14,17,0); cursor:pointer; border:none; padding:0;
+    transition:background .15s ease;
+  }
+  .thumb:hover .preview-overlay{background:rgba(13,14,17,.32);}
+  .preview-overlay .eye{
+    width:34px; height:34px; border-radius:999px; background:rgba(255,255,255,.92);
+    color:var(--text-primary); display:flex; align-items:center; justify-content:center;
+    opacity:0; transform:scale(.9); transition:opacity .15s ease, transform .15s ease;
+    box-shadow:0 2px 8px rgba(0,0,0,.18);
+  }
+  .thumb:hover .preview-overlay .eye{opacity:1; transform:scale(1);}
+
+  /* ---------- Preview modal ---------- */
+  .modal-backdrop{
+    position:fixed; inset:0; z-index:100; background:rgba(16,17,21,.52);
+    display:flex; align-items:center; justify-content:center; padding:24px;
+  }
+  .modal-backdrop[hidden]{display:none;}
+  .modal{
+    background:var(--surface); border-radius:var(--radius-card); box-shadow:var(--shadow-dropdown);
+    width:100%; max-width:1240px; max-height:92vh; overflow:hidden;
+    display:flex; flex-direction:column;
+  }
+  .modal-header{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:16px 18px; border-bottom:1px solid var(--border);
+  }
+  .modal-title{font-size:15.5px; font-weight:400; color:var(--text-primary);}
+  .modal-close{
+    width:28px; height:28px; border-radius:999px; border:none; background:var(--surface-subtle);
+    color:var(--text-secondary); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;
+  }
+  .modal-close:hover{background:var(--surface-hover); color:var(--text-primary);}
+  .modal-body{
+    background:var(--surface-subtle); overflow:auto; display:flex; align-items:flex-start; justify-content:center;
+    padding:16px;
+  }
+  .modal-body img{max-width:100%; border-radius:8px; border:1px solid var(--border-strong); display:block;}
+  .modal-footer{padding:14px 18px; border-top:1px solid var(--border);}
+  .modal-footer .view-btn{width:auto; padding:9px 18px; display:inline-flex;}
+
+  /* More menu — appears on card hover, top-right of thumbnail */
+  .more-wrap{position:absolute; top:10px; right:10px; z-index:5; opacity:0; transform:translateY(-2px);
+    transition:opacity .15s ease, transform .15s ease; pointer-events:none;}
+  .card:hover .more-wrap, .more-wrap[data-open="true"]{opacity:1; transform:translateY(0); pointer-events:auto;}
+  .more-btn{
+    width:26px; height:26px; border-radius:999px; border:none; cursor:pointer;
+    background:rgba(255,255,255,.85); color:var(--text-secondary);
+    box-shadow:0 1px 3px rgba(20,22,30,.18);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .more-btn:hover{background:#fff; color:var(--text-primary);}
+  .more-menu{
+    position:absolute; top:calc(100% + 6px); right:0; z-index:10;
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; box-shadow:var(--shadow-dropdown);
+    min-width:168px; padding:5px; display:none;
+  }
+  .more-wrap[data-open="true"] .more-menu{display:block;}
+  .more-menu a, .more-menu span{
+    display:flex; align-items:center; gap:8px; width:100%;
+    font-size:13px; color:var(--text-primary); padding:8px 9px; border-radius:7px;
+    text-decoration:none; background:none; border:none; font-family:inherit; cursor:pointer;
+  }
+  .more-menu a:hover{background:var(--surface-hover);}
+  .more-menu span{color:var(--text-tertiary); cursor:default;}
+
+  .card-body{padding:13px 14px 14px; display:flex; flex-direction:column; gap:10px; flex:1;}
+  .card-name{font-size:15.5px; font-weight:400; line-height:22px; letter-spacing:-0.15px; color:var(--text-primary);}
+
+  /* Single grouped meta line: pod · outcome · size */
+  .meta-chip{
+    display:flex; align-items:center; gap:7px; flex-wrap:wrap;
+    width:fit-content; max-width:100%;
+    font-size:12px; font-weight:400; color:var(--text-secondary);
+  }
+  .meta-chip .item{white-space:nowrap;}
+  .meta-chip .sep{width:3px; height:3px; border-radius:50%; background:var(--text-tertiary); flex-shrink:0;}
+
+  .card-footer{margin-top:auto; padding-top:2px;}
+  .view-btn{
+    display:flex; align-items:center; justify-content:center; gap:6px; width:100%;
+    background:none; color:var(--text-action); border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    font:inherit; font-size:12.5px; font-weight:400;
+    padding:8px 10px; cursor:pointer; text-decoration:none;
+  }
+  .view-btn:hover{background:var(--primary-soft); border-color:var(--border-strong); color:var(--primary);}
+  .view-btn[aria-disabled="true"]{position:relative; color:var(--text-tertiary); cursor:default;}
+  .view-btn[aria-disabled="true"]:hover{background:none; border-color:var(--border); color:var(--text-tertiary);}
+  .view-btn[aria-disabled="true"]::after{
+    content:attr(data-tooltip);
+    position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%);
+    background:#1f2024; color:#fff; font-size:11.5px; font-weight:400; letter-spacing:0;
+    padding:6px 10px; border-radius:6px; white-space:nowrap;
+    opacity:0; pointer-events:none; transition:opacity .15s ease;
+    box-shadow:0 4px 12px rgba(0,0,0,.2);
+  }
+  .view-btn[aria-disabled="true"]:hover::after{opacity:1;}
+
+  footer{
+    margin-top:32px; padding-top:16px; border-top:1px solid var(--border);
+    font-size:12px; color:var(--text-tertiary);
+  }
+  .empty{
+    border:1px dashed var(--border-strong); border-radius:var(--radius-card);
+    padding:28px 20px; text-align:center; color:var(--text-secondary);
+    background:var(--surface-subtle); display:none;
+  }
+  .empty .t{font-size:13px; font-weight:400; color:var(--text-primary); margin-bottom:3px;}
+  .empty .d{font-size:12.5px; max-width:38ch; margin-inline:auto;}
+
+  @media (max-width:640px){
+    .page-header{flex-direction:column; align-items:stretch;}
+    .filters{justify-content:space-between;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="page-header">
+    <h1>Rajiv's projects</h1>
+
+    <div class="filters">
+      <div class="filter" id="podFilter" data-open="false">
+        <button class="filter-btn" id="podFilterBtn" aria-haspopup="listbox" aria-expanded="false">
+          <span id="podFilterLabel">All pods</span>
+          <svg class="chev" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="filter-menu" id="podFilterMenu" role="listbox"></div>
+      </div>
+
+      <div class="filter" id="sizeFilter" data-open="false">
+        <button class="filter-btn" id="sizeFilterBtn" aria-haspopup="listbox" aria-expanded="false">
+          <span id="sizeFilterLabel">All sizes</span>
+          <svg class="chev" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="filter-menu" id="sizeFilterMenu" role="listbox"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <h2>Projects</h2>
+    <span class="section-count" id="count-projects">9</span>
+  </div>
+
+  <div class="grid" id="grid-projects"></div>
+  <div class="empty" id="empty-projects">
+    <div class="t">No projects match these filters</div>
+    <div class="d">Try selecting a different pod or size.</div>
+  </div>
+
+  <footer>Maintained by Rajiv Sathuri · Design</footer>
+
+</div>
+
+<div class="modal-backdrop" id="previewModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle"></div>
+      <button class="modal-close" id="modalClose" aria-label="Close preview">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <img id="modalImg" src="" alt="">
+    </div>
+    <div class="modal-footer" id="modalFooter"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var CHECK_SVG = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>';
+
+  // Pod identity — subtle pastel surface + icon color, screenshot sits on top when available.
+  var PODS = {
+    "MA":          {bg:"#f1eef8", icon:"var(--chip-purple-text)",  dot:"var(--chip-purple-text)",  svg:'<path d="M3 11l18-7-7 18-2-8-9-3z"/>'},
+    "Platform":    {bg:"#eaf1f8", icon:"var(--chip-info-text)",    dot:"var(--chip-info-text)",    svg:'<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>'},
+    "Website":     {bg:"#eaf4f2", icon:"var(--chip-success-text)", dot:"var(--chip-success-text)", svg:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 2.6 4.2 5.8 4.2 9s-1.4 6.4-4.2 9c-2.8-2.6-4.2-5.8-4.2-9S9.2 5.6 12 3z"/>'},
+    "Front desk":  {bg:"#faf2e8", icon:"var(--chip-warning-text)", dot:"var(--chip-warning-text)", svg:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/>'},
+    "Inbox":       {bg:"#f8ecec", icon:"var(--chip-danger-text)",  dot:"var(--chip-danger-text)",  svg:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>'}
+  };
+
+  var OUTCOME_DOT = {
+    "Retention":   "var(--chip-success-text)",
+    "Efficiency":  "var(--chip-warning-text)",
+    "Conversion":  "var(--chip-info-text)",
+    "Consistency": "var(--chip-purple-text)"
+  };
+
+  var PROJECTS = [
+    {name:"Campaigns calendar view", outcome:"Retention", pod:"MA", size:"Large",
+      link:"https://myna-git-feat-campaign-calendar-spotlight-birdeye-design.vercel.app/marketing-automation/manage-campaigns",
+      jira:"https://birdeye.atlassian.net/browse/V2BIRD-31690",
+      thumb:"thumbnails/campaigns-calendar-view.png"},
+    {name:"Onboarding get started setup UX — Op 1", outcome:"Efficiency", pod:"Platform", size:"Medium",
+      link:null,
+      jira:"https://birdeye.atlassian.net/browse/V2BIRD-34104",
+      thumb:"thumbnails/onboarding-get-started.png"},
+    {name:"Onboarding get started setup UX — CA", outcome:"Efficiency", pod:"Platform", size:"Small",
+      link:"https://docs.google.com/presentation/d/1SacZfXd6SYqRFTEy5BTIR8Wc2V_DaWH2_iVDnHzG1io/edit?usp=sharing",
+      jira:null,
+      thumb:"thumbnails/onboarding-setup-ca.png"},
+    {name:"Agent demos on Birdeye website", outcome:"Conversion", pod:"Website", size:"Large",
+      link:"https://sathurirajiv.github.io/Agent-demos---Website/",
+      jira:"https://birdeye.atlassian.net/browse/V2BIRD-23386",
+      thumb:"thumbnails/agent-demos-website.png"},
+    {name:"Resources page in Front desk — Fallback & failover", outcome:"Retention", pod:"Front desk", size:"Medium",
+      link:null,
+      jira:"https://birdeye.atlassian.net/browse/V2BIRD-24880",
+      thumb:"thumbnails/front-desk-fallback-failover.png"},
+    {name:"Convert all MA to Agent arc framework", outcome:"Consistency", pod:"MA", size:"Medium",
+      link:"https://www.figma.com/design/KcaewPfxy5EV65jgwqwRHN/MA---Campaigns-navigation-revamp?node-id=59-21567&t=BcprpwUzwJ3BwODE-4",
+      jira:"https://birdeye.atlassian.net/browse/V2BIRD-27682",
+      thumb:"thumbnails/ma-agent-arc-framework.png"},
+    {name:"Decentralise campaigns across products", outcome:"Retention", pod:"MA", size:"Large",
+      link:"https://www.figma.com/design/KcaewPfxy5EV65jgwqwRHN/MA---Campaigns-navigation-revamp?node-id=377-34062&t=WXK0JAY7iiV6ReYM-4",
+      jira:"https://birdeye.atlassian.net/browse/V2BIRD-28188",
+      thumb:"thumbnails/decentralise-campaigns.png"},
+    {name:"Make template builder consistent as Content hub", outcome:"Consistency", pod:"MA", size:"Small",
+      link:"https://www.figma.com/design/KcaewPfxy5EV65jgwqwRHN/MA---Campaigns-navigation-revamp?node-id=181-20723&t=aUjMGpq5O75CS86U-44",
+      jira:"https://birdeye.atlassian.net/browse/V2BIRD-29235",
+      thumb:"thumbnails/content-hub-template-builder.png"},
+    {name:"Inbox outcomes — Overview page", outcome:"Retention", pod:"Inbox", size:"Medium",
+      link:"https://myna-git-rupa-newui-birdeye-design.vercel.app/inbox",
+      jira:"https://birdeye.atlassian.net/browse/V2BIRD-28842",
+      thumb:"thumbnails/inbox-outcomes.png"}
+  ];
+
+  function esc(s){
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function cardHTML(p, idx){
+    var pod = PODS[p.pod] || {bg:"#f1f2f4", icon:"var(--text-tertiary)", dot:"var(--text-tertiary)", svg:""};
+    var outcomeDot = OUTCOME_DOT[p.outcome] || "var(--text-tertiary)";
+
+    var thumbInner = p.thumb
+      ? '<img class="thumb-img" src="'+p.thumb+'" alt="'+esc(p.name)+' preview">'
+      : '<div class="thumb-placeholder" style="background:'+pod.bg+'"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="'+pod.icon+'" stroke-width="1.6">'+pod.svg+'</svg></div>';
+
+    var footerLink = p.link
+      ? '<a class="view-btn" href="'+p.link+'" target="_blank" rel="noopener">View details</a>'
+      : '<span class="view-btn" aria-disabled="true" data-tooltip="Link to be updated soon">View details</span>';
+
+    var jiraItem = p.jira
+      ? '<a href="'+p.jira+'" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3h7v7M21 3L10 14M19 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6"/></svg>Open Jira ticket</a>'
+      : '<span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3h7v7M21 3L10 14M19 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6"/></svg>No Jira ticket</span>';
+
+    return (
+      '<div class="card" data-size="'+p.size+'" data-pod="'+esc(p.pod)+'">'+
+        '<div class="thumb" style="background:'+pod.bg+'">'+
+          '<div class="thumb-frame">'+thumbInner+
+            (p.thumb ? '<button class="preview-overlay" data-idx="'+idx+'" aria-label="Preview '+esc(p.name)+'"><span class="eye"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></span></button>' : '')+
+          '</div>'+
+          '<div class="more-wrap" data-idx="'+idx+'">'+
+            '<button class="more-btn" aria-haspopup="menu" aria-expanded="false" title="More">'+
+              '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>'+
+            '</button>'+
+            '<div class="more-menu" role="menu">'+jiraItem+'</div>'+
+          '</div>'+
+        '</div>'+
+        '<div class="card-body">'+
+          '<div class="card-name">'+esc(p.name)+'</div>'+
+          '<div class="meta-chip">'+
+            '<span class="item">'+esc(p.pod)+'</span>'+
+            '<span class="sep"></span>'+
+            '<span class="item">'+esc(p.outcome)+'</span>'+
+            '<span class="sep"></span>'+
+            '<span class="item">'+esc(p.size)+'</span>'+
+          '</div>'+
+          '<div class="card-footer">'+footerLink+'</div>'+
+        '</div>'+
+      '</div>'
+    );
+  }
+
+  var gridProjects = document.getElementById("grid-projects");
+  gridProjects.innerHTML = PROJECTS.map(cardHTML).join("");
+
+  // ---- per-card "more" menus ----
+  var openMoreWrap = null;
+  gridProjects.querySelectorAll(".more-wrap").forEach(function(wrap){
+    var btn = wrap.querySelector(".more-btn");
+    btn.addEventListener("click", function(e){
+      e.stopPropagation();
+      var isOpen = wrap.dataset.open === "true";
+      if(openMoreWrap && openMoreWrap !== wrap){
+        openMoreWrap.dataset.open = "false";
+        openMoreWrap.querySelector(".more-btn").setAttribute("aria-expanded","false");
+      }
+      wrap.dataset.open = isOpen ? "false" : "true";
+      btn.setAttribute("aria-expanded", isOpen ? "false" : "true");
+      openMoreWrap = isOpen ? null : wrap;
+    });
+  });
+  document.addEventListener("click", function(){
+    if(openMoreWrap){
+      openMoreWrap.dataset.open = "false";
+      openMoreWrap.querySelector(".more-btn").setAttribute("aria-expanded","false");
+      openMoreWrap = null;
+    }
+  });
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape" && openMoreWrap){
+      openMoreWrap.dataset.open = "false";
+      openMoreWrap = null;
+    }
+  });
+
+  // ---- preview modal ----
+  var previewModal = document.getElementById("previewModal");
+  var modalTitle = document.getElementById("modalTitle");
+  var modalImg = document.getElementById("modalImg");
+  var modalFooter = document.getElementById("modalFooter");
+  var modalClose = document.getElementById("modalClose");
+
+  function openPreview(idx){
+    var p = PROJECTS[idx];
+    if(!p || !p.thumb) return;
+    modalTitle.textContent = p.name;
+    modalImg.src = p.thumb;
+    modalImg.alt = p.name + " preview";
+    modalFooter.innerHTML = p.link
+      ? '<a class="view-btn" href="'+p.link+'" target="_blank" rel="noopener">View details</a>'
+      : '<span class="view-btn" aria-disabled="true" data-tooltip="Link to be updated soon">View details</span>';
+    previewModal.hidden = false;
+  }
+  function closePreview(){
+    previewModal.hidden = true;
+    modalImg.src = "";
+  }
+
+  gridProjects.querySelectorAll(".preview-overlay").forEach(function(btn){
+    btn.addEventListener("click", function(e){
+      e.stopPropagation();
+      openPreview(Number(btn.dataset.idx));
+    });
+  });
+  modalClose.addEventListener("click", closePreview);
+  previewModal.addEventListener("click", function(e){
+    if(e.target === previewModal) closePreview();
+  });
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape" && !previewModal.hidden) closePreview();
+  });
+
+  // ---- generic multi-select dropdown factory (used for pod + size) ----
+  function buildFilter(opts){
+    var values = opts.values;
+    var allLabel = opts.allLabel;
+    var active = new Set(values);
+
+    var filterEl = document.getElementById(opts.wrapId);
+    var btn = document.getElementById(opts.btnId);
+    var label = document.getElementById(opts.labelId);
+    var menu = document.getElementById(opts.menuId);
+
+    var rows = ['<button class="filter-opt" role="option" data-v="__all__" aria-checked="true"><span class="box">'+CHECK_SVG+'</span>'+allLabel+'</button>', '<div class="filter-div"></div>'];
+    values.forEach(function(v){
+      rows.push('<button class="filter-opt" role="option" data-v="'+v+'" aria-checked="true"><span class="box">'+CHECK_SVG+'</span>'+v+'</button>');
+    });
+    menu.innerHTML = rows.join("");
+
+    function updateLabel(){
+      if(active.size === values.length) label.textContent = allLabel;
+      else if(active.size === 0) label.textContent = "None";
+      else if(active.size === 1) label.textContent = Array.from(active)[0];
+      else label.textContent = active.size + " selected";
+    }
+    function setChecked(v, checked){
+      var opt = menu.querySelector('[data-v="'+v+'"]');
+      if(opt) opt.setAttribute("aria-checked", checked ? "true" : "false");
+    }
+
+    menu.querySelectorAll(".filter-opt").forEach(function(opt){
+      opt.addEventListener("click", function(e){
+        e.stopPropagation();
+        var v = opt.dataset.v;
+        if(v === "__all__"){
+          var allChecked = active.size === values.length;
+          active = allChecked ? new Set() : new Set(values);
+          values.forEach(function(val){ setChecked(val, !allChecked); });
+        } else {
+          var checked = opt.getAttribute("aria-checked") === "true";
+          checked ? active.delete(v) : active.add(v);
+          setChecked(v, !checked);
+        }
+        menu.querySelector('[data-v="__all__"]').setAttribute("aria-checked", active.size === values.length ? "true" : "false");
+        updateLabel();
+        opts.onChange();
+      });
+    });
+
+    btn.addEventListener("click", function(e){
+      e.stopPropagation();
+      var isOpen = filterEl.dataset.open === "true";
+      filterEl.dataset.open = isOpen ? "false" : "true";
+      btn.setAttribute("aria-expanded", isOpen ? "false" : "true");
+    });
+    document.addEventListener("click", function(e){
+      if(!filterEl.contains(e.target)){
+        filterEl.dataset.open = "false";
+        btn.setAttribute("aria-expanded","false");
+      }
+    });
+
+    return { getActive: function(){ return active; } };
+  }
+
+  function applyFilters(){
+    var activePods = podCtl.getActive();
+    var activeSizes = sizeCtl.getActive();
+    var cards = gridProjects.querySelectorAll(".card");
+    var visible = 0;
+    cards.forEach(function(c){
+      var show = activeSizes.has(c.dataset.size) && activePods.has(c.dataset.pod);
+      c.style.display = show ? "" : "none";
+      if(show) visible++;
+    });
+    document.getElementById("count-projects").textContent = visible;
+    document.getElementById("empty-projects").style.display = visible === 0 ? "block" : "none";
+    gridProjects.style.display = visible === 0 ? "none" : "grid";
+  }
+
+  var podCtl = buildFilter({
+    values:["MA","Platform","Front desk","Website","Inbox"],
+    allLabel:"All pods",
+    wrapId:"podFilter", btnId:"podFilterBtn", labelId:"podFilterLabel", menuId:"podFilterMenu",
+    onChange: function(){ applyFilters(); }
+  });
+  var sizeCtl = buildFilter({
+    values:["Large","Medium","Small"],
+    allLabel:"All sizes",
+    wrapId:"sizeFilter", btnId:"sizeFilterBtn", labelId:"sizeFilterLabel", menuId:"sizeFilterMenu",
+    onChange: function(){ applyFilters(); }
+  });
+
+  applyFilters();
+})();
+</script>
+</body>
+</html>
