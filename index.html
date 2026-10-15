@@ -278,7 +278,7 @@
     display:flex; align-items:center; justify-content:space-between; gap:12px;
     padding:14px 16px; border-bottom:1px solid var(--border); flex-shrink:0;
   }
-  .drawer-header-left{display:flex; align-items:center; gap:12px; min-width:0;}
+  .drawer-header-actions{display:flex; align-items:center; gap:8px; flex-shrink:0;}
   .drawer-title{font-size:14.5px; color:var(--text-primary); white-space:nowrap;}
   .drawer-body{flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:16px;}
 
@@ -393,18 +393,19 @@
 <div class="drawer-overlay" id="drawerOverlay" hidden>
   <div class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
     <div class="drawer-header">
-      <div class="drawer-header-left">
+      <div class="drawer-title" id="drawerTitle">Add project</div>
+      <div class="drawer-header-actions">
         <button type="button" class="btn-ghost" id="drawerCancelBtn">Cancel</button>
-        <div class="drawer-title" id="drawerTitle">Add project</div>
+        <button type="submit" form="projectForm" class="btn-primary" id="drawerSaveBtn" hidden>Save project</button>
       </div>
-      <button type="submit" form="projectForm" class="btn-primary" id="drawerSaveBtn" hidden>Save project</button>
     </div>
 
     <div class="drawer-body">
       <div class="token-gate" id="tokenGate">
-        <p>Publishing a new project commits it to the GitHub repo behind this page. Connect with a GitHub personal access token (repo scope) — it's stored only in this browser, never on the page itself.</p>
+        <p>This publishes to <strong>github.com/sathurirajiv/project-directory</strong>. You don't need to type that link — paste a GitHub <strong>personal access token</strong> below (not a URL) and the fields to add a project will appear once it's verified.</p>
+        <p><a href="https://github.com/settings/tokens/new?scopes=repo&description=Rajiv%27s%20projects%20page" target="_blank" rel="noopener">Create a token with "repo" scope →</a> then paste it here. It's saved only in this browser, never on the page itself.</p>
         <div class="row">
-          <input type="password" id="tokenInput" placeholder="ghp_••••••••••••••••••••">
+          <input type="password" id="tokenInput" placeholder="Paste your token, e.g. ghp_xxxxxxxxxxxx">
           <button class="btn-primary" id="tokenConnectBtn" style="flex:none;">Connect</button>
         </div>
         <div class="form-status" id="tokenStatus"></div>
@@ -789,11 +790,16 @@
       "Content-Type": "application/json"
     };
   }
+  function ghError(res, j){
+    var e = new Error(j.message || ("GitHub error " + res.status));
+    e.status = res.status;
+    return e;
+  }
   function ghGetFile(path, token){
     return fetch("https://api.github.com/repos/" + GH_OWNER + "/" + GH_REPO + "/contents/" + path + "?ref=" + GH_BRANCH, {headers: ghHeaders(token)})
       .then(function(res){
         return res.json().then(function(j){
-          if(!res.ok) throw new Error(j.message || ("GitHub error " + res.status));
+          if(!res.ok) throw ghError(res, j);
           return j;
         });
       });
@@ -805,10 +811,27 @@
       method: "PUT", headers: ghHeaders(token), body: JSON.stringify(body)
     }).then(function(res){
       return res.json().then(function(j){
-        if(!res.ok) throw new Error(j.message || ("GitHub error " + res.status));
+        if(!res.ok) throw ghError(res, j);
         return j;
       });
     });
+  }
+  function friendlyGhError(err){
+    var status = err && err.status;
+    var msg = (err && err.message) || "";
+    if(status === 401 || /bad credentials/i.test(msg)){
+      return "GitHub didn't recognize that token (“Bad credentials”). Paste the full personal access token — it should start with ghp_ or github_pat_ — and make sure it hasn't expired or been revoked.";
+    }
+    if(status === 403){
+      return "GitHub blocked this (403) — the token likely doesn't have “repo” scope, or doesn't have write access to sathurirajiv/project-directory.";
+    }
+    if(status === 404){
+      return "GitHub couldn't find that file or repo (404) — check the token has access to sathurirajiv/project-directory.";
+    }
+    if(status === 409){
+      return "The project list changed on GitHub while you were editing. Reopen the drawer and try again.";
+    }
+    return msg || "Something went wrong talking to GitHub. Please try again.";
   }
   function readFileAsDataUrl(file){
     return new Promise(function(resolve, reject){
@@ -899,11 +922,37 @@
 
   tokenConnectBtn.addEventListener("click", function(){
     var t = tokenInput.value.trim();
+    tokenStatus.className = "form-status";
     if(!t){ tokenStatus.textContent = "Paste a token first."; return; }
-    setToken(t);
-    tokenInput.value = "";
-    tokenStatus.textContent = "";
-    refreshTokenUI();
+    if(/^https?:\/\//i.test(t)){
+      tokenStatus.textContent = "That looks like a link, not a token. Paste the personal access token itself — use the “Create a token” link above to generate one.";
+      return;
+    }
+    tokenConnectBtn.disabled = true;
+    tokenStatus.textContent = "Checking token…";
+    fetch("https://api.github.com/repos/" + GH_OWNER + "/" + GH_REPO, {headers: ghHeaders(t)})
+      .then(function(res){
+        return res.json().then(function(j){
+          if(!res.ok) throw ghError(res, j);
+          return j;
+        });
+      })
+      .then(function(repo){
+        if(repo.permissions && repo.permissions.push === false){
+          throw {status: 403, message: "no push access"};
+        }
+        setToken(t);
+        tokenInput.value = "";
+        tokenStatus.textContent = "";
+        tokenStatus.className = "form-status";
+        refreshTokenUI();
+      })
+      .catch(function(err){
+        tokenStatus.textContent = friendlyGhError(err);
+      })
+      .finally(function(){
+        tokenConnectBtn.disabled = false;
+      });
   });
   disconnectTokenBtn.addEventListener("click", function(){
     clearToken();
@@ -984,7 +1033,11 @@
       })
       .catch(function(err){
         formStatus.className = "form-status";
-        formStatus.textContent = err.message || "Something went wrong. Check your token's permissions and try again.";
+        formStatus.textContent = friendlyGhError(err);
+        if(err && err.status === 401){
+          clearToken();
+          refreshTokenUI();
+        }
       })
       .finally(function(){
         drawerSaveBtn.disabled = false;
